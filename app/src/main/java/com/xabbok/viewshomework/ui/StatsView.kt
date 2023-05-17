@@ -61,7 +61,7 @@ class StatsView @JvmOverloads constructor(
 
     var data: List<Float> = emptyList()
         set(value) {
-            field = value
+            field = normalizeData(value)
             invalidate()
         }
 
@@ -95,6 +95,14 @@ class StatsView @JvmOverloads constructor(
             center.y + textPaint.textSize / 4,
             textPaint
         )
+    }
+
+    private fun normalizeData(orig: List<Float>): List<Float> {
+        val dataSum = orig.sum()
+        val normalData = orig.map {
+            it / dataSum
+        }
+        return normalData
     }
 
     private fun generateRandomColor() = Random.nextInt(0xFF000000.toInt(), 0xFFFFFFFF.toInt())
