@@ -81,12 +81,20 @@ class StatsView @JvmOverloads constructor(
             return
 
         var startAngle = -90F
-        data.forEachIndexed { index, data ->
-            var angle = data * 360F
-            paint.color = colors.getOrElse(index) { generateRandomColor() }
 
-            canvas.drawArc(oval, startAngle, angle, false, paint)
-            startAngle += angle
+        //рисуем дугу
+        data.forEachIndexed { index, d ->
+            paint.color = colors.getOrElse(index) { generateRandomColor() }
+            canvas.drawArc(oval, startAngle, d * 360F, false, paint)
+            startAngle += d * 360F
+        }
+
+        //исправляем концы дуг
+        startAngle = -90F
+        data.forEachIndexed { index, d ->
+            paint.color = colors.getOrElse(index) { generateRandomColor() }
+            canvas.drawArc(oval, startAngle, Float.MIN_VALUE, false, paint)
+            startAngle += d * 360F
         }
 
         canvas.drawText(
