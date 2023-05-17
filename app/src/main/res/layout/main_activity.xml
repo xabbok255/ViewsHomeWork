@@ -13,6 +13,7 @@
         app:color2="@android:color/holo_blue_light"
         app:color3="@android:color/holo_red_light"
         app:color4="@android:color/holo_green_light"
+        app:freeColor="@color/ping_grey"
         app:lineWidth="25dp"
         app:textSize="20sp">
     </com.xabbok.viewshomework.ui.StatsView>
