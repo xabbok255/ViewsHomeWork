@@ -1,5 +1,6 @@
 package com.xabbok.viewshomework.ui
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -8,9 +9,9 @@ import android.graphics.PointF
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
+import android.view.animation.LinearInterpolator
 import androidx.core.content.withStyledAttributes
 import com.xabbok.viewshomework.R
-import java.lang.IllegalArgumentException
 import kotlin.math.ceil
 import kotlin.math.min
 import kotlin.random.Random
@@ -26,17 +27,16 @@ class StatsView @JvmOverloads constructor(
     private var lineWidth = AndroidUtils.dp(context, 5F)
     private var colors = emptyList<Int>()
     private var freeColor: Int = 0
+    private var valueAnimator: ValueAnimator? = null
+    private var progress: Float = 0F
 
     init {
         context.withStyledAttributes(attributeSet, R.styleable.StatsView) {
             textSize = getDimension(R.styleable.StatsView_textSize, textSize)
             lineWidth = getDimension(R.styleable.StatsView_lineWidth, lineWidth)
-            colors = listOf(
-                getColor(R.styleable.StatsView_color1, generateRandomColor()),
-                getColor(R.styleable.StatsView_color2, generateRandomColor()),
-                getColor(R.styleable.StatsView_color3, generateRandomColor()),
-                getColor(R.styleable.StatsView_color4, generateRandomColor())
-            )
+
+            colors = resources.getIntArray(getResourceId(R.styleable.StatsView_colors, 0)).toList()
+
             freeColor = getColor(R.styleable.StatsView_freeColor, Color.LTGRAY)
         }
     }
@@ -76,7 +76,7 @@ class StatsView @JvmOverloads constructor(
     var data: StatsViewData? = null
         set(value) {
             field = value
-            invalidate()
+            update()
         }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -103,7 +103,7 @@ class StatsView @JvmOverloads constructor(
                 //рисуем дугу
                 realWeights.forEachIndexed { index, d ->
                     paint.color = colors.getOrElse(index) { generateRandomColor() }
-                    canvas.drawArc(oval, startAngle, d * 360F, false, paint)
+                    canvas.drawArc(oval, startAngle, d * 360F * progress, false, paint)
                     startAngle += d * 360F
                 }
 
@@ -122,6 +122,26 @@ class StatsView @JvmOverloads constructor(
                 center.y + textPaint.textSize / 4,
                 textPaint
             )
+        }
+    }
+
+    private fun update() {
+        valueAnimator?.let {
+            it.removeAllListeners()
+            it.cancel()
+        }
+
+        progress = 0F
+
+        valueAnimator = ValueAnimator.ofFloat(0F, 1F).apply {
+            addUpdateListener { anim ->
+                progress = anim.animatedValue as Float
+                invalidate()
+            }
+            duration = 500
+            interpolator = LinearInterpolator()
+        }.also {
+            it.start()
         }
     }
 

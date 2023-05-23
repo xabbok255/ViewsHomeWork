@@ -3,10 +3,7 @@
     <declare-styleable name="StatsView">
         <attr name="textSize" format="dimension|reference" />
         <attr name="lineWidth" format="dimension|reference" />
-        <attr name="color1" format="color|reference" />
-        <attr name="color2" format="color|reference" />
-        <attr name="color3" format="color|reference" />
-        <attr name="color4" format="color|reference" />
         <attr name="freeColor" format="color|reference" />
+        <attr name="colors" format="reference" />
     </declare-styleable>
 </resources>
