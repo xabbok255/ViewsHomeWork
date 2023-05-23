@@ -13,6 +13,7 @@ import android.view.animation.LinearInterpolator
 import androidx.core.content.withStyledAttributes
 import com.xabbok.viewshomework.R
 import kotlin.math.ceil
+import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
 
@@ -101,18 +102,44 @@ class StatsView @JvmOverloads constructor(
 
             if (data.freePercent < 100) {
                 //рисуем дугу
+                val maxRealValue = (100F - (data.freePercent / 100F)) / 100F
+                val maxProgressValue = progress * maxRealValue
+
+                var progressValueCounter = maxProgressValue
                 realWeights.forEachIndexed { index, d ->
+                    if (progressValueCounter < 0)
+                        return@forEachIndexed
+                    val chunkProgressValue = max(min(progressValueCounter, d), 0F)
+                    progressValueCounter -= (d)
                     paint.color = colors.getOrElse(index) { generateRandomColor() }
-                    canvas.drawArc(oval, startAngle + progress * 360F, d * 360F * progress, false, paint)
-                    startAngle += d * 360F
+                    canvas.drawArc(
+                        oval,
+                        startAngle,
+                        360F * chunkProgressValue,
+                        false,
+                        paint
+                    )
+                    startAngle += chunkProgressValue * 360F
                 }
 
                 //исправляем концы дуг
                 startAngle = -90F
+                progressValueCounter = maxProgressValue
+
                 realWeights.forEachIndexed { index, d ->
+                    if (progressValueCounter < 0)
+                        return@forEachIndexed
+                    val chunkProgressValue = max(min(progressValueCounter, d), 0F)
+                    progressValueCounter -= (d)
                     paint.color = colors.getOrElse(index) { generateRandomColor() }
-                    canvas.drawArc(oval, startAngle + progress * 360F, Float.MIN_VALUE, false, paint)
-                    startAngle += d * 360F
+                    canvas.drawArc(
+                        oval,
+                        startAngle,
+                        Float.MIN_VALUE,
+                        false,
+                        paint
+                    )
+                    startAngle += chunkProgressValue * 360F
                 }
             }
 
