@@ -27,7 +27,7 @@ class StatsView @JvmOverloads constructor(
     private var lineWidth = AndroidUtils.dp(context, 5F)
     private var colors = emptyList<Int>()
     private var freeColor: Int = 0
-    private var valueAnimator: ValueAnimator? = null
+    private var progressAnimator: ValueAnimator? = null
     private var progress: Float = 0F
 
     init {
@@ -103,7 +103,7 @@ class StatsView @JvmOverloads constructor(
                 //рисуем дугу
                 realWeights.forEachIndexed { index, d ->
                     paint.color = colors.getOrElse(index) { generateRandomColor() }
-                    canvas.drawArc(oval, startAngle, d * 360F * progress, false, paint)
+                    canvas.drawArc(oval, startAngle + progress * 360F, d * 360F * progress, false, paint)
                     startAngle += d * 360F
                 }
 
@@ -111,7 +111,7 @@ class StatsView @JvmOverloads constructor(
                 startAngle = -90F
                 realWeights.forEachIndexed { index, d ->
                     paint.color = colors.getOrElse(index) { generateRandomColor() }
-                    canvas.drawArc(oval, startAngle, Float.MIN_VALUE, false, paint)
+                    canvas.drawArc(oval, startAngle + progress * 360F, Float.MIN_VALUE, false, paint)
                     startAngle += d * 360F
                 }
             }
@@ -126,14 +126,14 @@ class StatsView @JvmOverloads constructor(
     }
 
     private fun update() {
-        valueAnimator?.let {
+        progressAnimator?.let {
             it.removeAllListeners()
             it.cancel()
         }
 
         progress = 0F
 
-        valueAnimator = ValueAnimator.ofFloat(0F, 1F).apply {
+        progressAnimator = ValueAnimator.ofFloat(0F, 1F).apply {
             addUpdateListener { anim ->
                 progress = anim.animatedValue as Float
                 invalidate()
