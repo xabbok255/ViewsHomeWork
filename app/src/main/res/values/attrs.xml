@@ -8,6 +8,7 @@
         <attr name="fillType" format="enum">
             <enum name="parallel" value="1" />
             <enum name="sequential" value="2" />
+            <enum name="bidirectional" value="3" />
         </attr>
     </declare-styleable>
 </resources>

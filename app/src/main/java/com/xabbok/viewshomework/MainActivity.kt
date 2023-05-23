@@ -10,7 +10,8 @@ class MainActivity : AppCompatActivity(R.layout.main_activity) {
         super.onCreate(savedInstanceState)
         val views = listOf<StatsView>(
             findViewById<StatsView>(R.id.statsViewParallel),
-            findViewById<StatsView>(R.id.statsViewSequential)
+            findViewById<StatsView>(R.id.statsViewSequential),
+            findViewById<StatsView>(R.id.statsViewBidirectional)
         )
 
         views.forEach {statsView ->

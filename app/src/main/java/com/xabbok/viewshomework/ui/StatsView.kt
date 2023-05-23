@@ -36,6 +36,7 @@ class StatsView @JvmOverloads constructor(
 
     private val statsViewDrawSequentially = StatsViewDrawSequentiallyImpl()
     private val statsViewDrawParallel = StatsViewDrawParallelImpl()
+    private val statsViewDrawBidirectional = StatsViewDrawBidirectionalImpl()
 
     init {
         context.withStyledAttributes(attributeSet, R.styleable.StatsView) {
@@ -115,6 +116,10 @@ class StatsView @JvmOverloads constructor(
 
                     2 -> {
                         drawInterface = statsViewDrawSequentially
+                    }
+
+                    3 -> {
+                        drawInterface = statsViewDrawBidirectional
                     }
 
                     else -> throw InvalidParameterException("Wrong fillType value!")
