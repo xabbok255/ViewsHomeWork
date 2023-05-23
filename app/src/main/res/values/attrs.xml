@@ -5,5 +5,9 @@
         <attr name="lineWidth" format="dimension|reference" />
         <attr name="freeColor" format="color|reference" />
         <attr name="colors" format="reference" />
+        <attr name="fillType" format="enum">
+            <enum name="parallel" value="1" />
+            <enum name="sequential" value="2" />
+        </attr>
     </declare-styleable>
 </resources>
