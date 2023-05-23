@@ -1,5 +1,6 @@
 package com.xabbok.viewshomework.ui
 
+import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
@@ -27,8 +28,10 @@ class StatsView @JvmOverloads constructor(
     private var lineWidth = AndroidUtils.dp(context, 5F)
     private var colors = emptyList<Int>()
     private var freeColor: Int = 0
-    private var valueAnimator: ValueAnimator? = null
+    private var progressAnimator: ValueAnimator? = null
+    private var rotationAnimator: ValueAnimator? = null
     private var progress: Float = 0F
+    private var rotation: Float = 0F
 
     init {
         context.withStyledAttributes(attributeSet, R.styleable.StatsView) {
@@ -103,7 +106,7 @@ class StatsView @JvmOverloads constructor(
                 //рисуем дугу
                 realWeights.forEachIndexed { index, d ->
                     paint.color = colors.getOrElse(index) { generateRandomColor() }
-                    canvas.drawArc(oval, startAngle, d * 360F * progress, false, paint)
+                    canvas.drawArc(oval, startAngle + rotation, d * 360F * progress, false, paint)
                     startAngle += d * 360F
                 }
 
@@ -111,7 +114,7 @@ class StatsView @JvmOverloads constructor(
                 startAngle = -90F
                 realWeights.forEachIndexed { index, d ->
                     paint.color = colors.getOrElse(index) { generateRandomColor() }
-                    canvas.drawArc(oval, startAngle, Float.MIN_VALUE, false, paint)
+                    canvas.drawArc(oval, startAngle + rotation, Float.MIN_VALUE, false, paint)
                     startAngle += d * 360F
                 }
             }
@@ -126,23 +129,40 @@ class StatsView @JvmOverloads constructor(
     }
 
     private fun update() {
-        valueAnimator?.let {
+        progressAnimator?.let {
+            it.removeAllListeners()
+            it.cancel()
+        }
+
+        rotationAnimator?.let {
             it.removeAllListeners()
             it.cancel()
         }
 
         progress = 0F
+        rotation = 0F
 
-        valueAnimator = ValueAnimator.ofFloat(0F, 1F).apply {
+        rotationAnimator = ValueAnimator.ofFloat(0F, 360F).apply {
+            addUpdateListener { anim ->
+                rotation = anim.animatedValue as Float
+                invalidate()
+            }
+            duration = 500
+            interpolator = LinearInterpolator()
+        }
+
+        progressAnimator = ValueAnimator.ofFloat(0F, 1F).apply {
             addUpdateListener { anim ->
                 progress = anim.animatedValue as Float
                 invalidate()
             }
             duration = 500
             interpolator = LinearInterpolator()
-        }.also {
-            it.start()
         }
+
+        AnimatorSet().apply {
+            playTogether(progressAnimator, rotationAnimator)
+        }.start()
     }
 
     private fun generateRandomColor() = Random.nextInt(0xFF000000.toInt(), 0xFFFFFFFF.toInt())
