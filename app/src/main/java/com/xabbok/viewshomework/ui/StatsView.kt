@@ -12,8 +12,8 @@ import android.view.View
 import android.view.animation.LinearInterpolator
 import androidx.core.content.withStyledAttributes
 import com.xabbok.viewshomework.R
+import java.security.InvalidParameterException
 import kotlin.math.ceil
-import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
 
@@ -30,6 +30,12 @@ class StatsView @JvmOverloads constructor(
     private var freeColor: Int = 0
     private var progressAnimator: ValueAnimator? = null
     private var progress: Float = 0F
+    private var fillType: Int = 0
+
+    private val startAngle = -90F
+
+    private val statsViewDrawSequentially = StatsViewDrawSequentiallyImpl()
+    private val statsViewDrawParallel = StatsViewDrawParallelImpl()
 
     init {
         context.withStyledAttributes(attributeSet, R.styleable.StatsView) {
@@ -39,6 +45,8 @@ class StatsView @JvmOverloads constructor(
             colors = resources.getIntArray(getResourceId(R.styleable.StatsView_colors, 0)).toList()
 
             freeColor = getColor(R.styleable.StatsView_freeColor, Color.LTGRAY)
+
+            fillType = getInt(R.styleable.StatsView_fillType, 1)
         }
     }
 
@@ -93,54 +101,34 @@ class StatsView @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas) {
         data?.let { data ->
-            var startAngle = -90F
-
             val realWeights = if (data.freePercent > 0)
                 data.weights.map { it * (100 - data.freePercent) / 100 } else data.weights
 
             canvas.drawCircle(center.x, center.y, radius, freePaint)
 
             if (data.freePercent < 100) {
-                //рисуем дугу
-                val maxRealValue = (100F - (data.freePercent / 100F)) / 100F
-                val maxProgressValue = progress * maxRealValue
+                lateinit var drawInterface: StatsViewDrawInterface
+                when (fillType) {
+                    1 -> {
+                        drawInterface = statsViewDrawParallel
+                    }
 
-                var progressValueCounter = maxProgressValue
-                realWeights.forEachIndexed { index, d ->
-                    if (progressValueCounter < 0)
-                        return@forEachIndexed
-                    val chunkProgressValue = max(min(progressValueCounter, d), 0F)
-                    progressValueCounter -= (d)
-                    paint.color = colors.getOrElse(index) { generateRandomColor() }
-                    canvas.drawArc(
-                        oval,
-                        startAngle,
-                        360F * chunkProgressValue,
-                        false,
-                        paint
-                    )
-                    startAngle += chunkProgressValue * 360F
+                    2 -> {
+                        drawInterface = statsViewDrawSequentially
+                    }
+
+                    else -> throw InvalidParameterException("Wrong fillType value!")
                 }
-
-                //исправляем концы дуг
-                startAngle = -90F
-                progressValueCounter = maxProgressValue
-
-                realWeights.forEachIndexed { index, d ->
-                    if (progressValueCounter < 0)
-                        return@forEachIndexed
-                    val chunkProgressValue = max(min(progressValueCounter, d), 0F)
-                    progressValueCounter -= (d)
-                    paint.color = colors.getOrElse(index) { generateRandomColor() }
-                    canvas.drawArc(
-                        oval,
-                        startAngle,
-                        Float.MIN_VALUE,
-                        false,
-                        paint
-                    )
-                    startAngle += chunkProgressValue * 360F
-                }
+                drawInterface.draw(
+                    data = data,
+                    realWeights = realWeights,
+                    canvas = canvas,
+                    startAngle = startAngle,
+                    animationProgress = progress,
+                    paint = paint,
+                    colors = colors,
+                    oval = oval
+                )
             }
 
             canvas.drawText(
@@ -165,14 +153,14 @@ class StatsView @JvmOverloads constructor(
                 progress = anim.animatedValue as Float
                 invalidate()
             }
-            duration = 500
+            duration = 3000
             interpolator = LinearInterpolator()
         }.also {
             it.start()
         }
     }
 
-    private fun generateRandomColor() = Random.nextInt(0xFF000000.toInt(), 0xFFFFFFFF.toInt())
+
 }
 
 private fun normalizeData(orig: List<Float>): List<Float> {
@@ -206,3 +194,5 @@ class StatsViewData constructor(freePercent: Float, weights: List<Float>) {
         this.weights = weights
     }
 }
+
+fun generateRandomColor() = Random.nextInt(0xFF000000.toInt(), 0xFFFFFFFF.toInt())

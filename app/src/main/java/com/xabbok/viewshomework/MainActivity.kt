@@ -8,13 +8,19 @@ import com.xabbok.viewshomework.ui.StatsViewData
 class MainActivity : AppCompatActivity(R.layout.main_activity) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val views = listOf<StatsView>(
+            findViewById<StatsView>(R.id.statsViewParallel),
+            findViewById<StatsView>(R.id.statsViewSequential)
+        )
 
-        val statsView = findViewById<StatsView>(R.id.statsView)
-        statsView.postDelayed({
-            statsView.data = StatsViewData(0F, listOf(
-                500F, 500F, 500F, 500F
-            ))
-        }, 300)
+        views.forEach {statsView ->
+            statsView.postDelayed({
+                statsView.data = StatsViewData(0F, listOf(
+                    500F, 500F, 500F, 500F
+                ))
+            }, 300)
+        }
+
 
         /*statsView.startAnimation(
             AnimationUtils.loadAnimation(this, R.anim.animation)

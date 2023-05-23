@@ -6,11 +6,22 @@
     android:orientation="vertical">
 
     <com.xabbok.viewshomework.ui.StatsView
-        android:id="@+id/statsView"
+        android:id="@+id/statsViewSequential"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_marginTop="30dp"
         app:colors="@array/colors"
+        app:fillType="sequential"
+        app:lineWidth="25dp"
+        app:textSize="20sp" />
+
+    <com.xabbok.viewshomework.ui.StatsView
+        android:id="@+id/statsViewParallel"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginTop="30dp"
+        app:colors="@array/colors"
+        app:fillType="parallel"
         app:lineWidth="25dp"
         app:textSize="20sp" />
 </LinearLayout>
