@@ -1,12 +1,14 @@
 package com.xabbok.viewshomework.ui
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PointF
 import android.graphics.RectF
+import android.graphics.SweepGradient
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.LinearInterpolator
@@ -16,6 +18,7 @@ import java.security.InvalidParameterException
 import kotlin.math.ceil
 import kotlin.math.min
 import kotlin.random.Random
+
 
 class StatsView @JvmOverloads constructor(
     context: Context,
@@ -100,7 +103,49 @@ class StatsView @JvmOverloads constructor(
         )
     }
 
+    @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas) {
+        val centerX = width / 2f
+        val centerY = height / 2f
+        val radius = width / 2f
+
+        val colorsA =
+            IntArray(12) { intArrayOf(Color.RED, Color.RED, Color.BLUE, Color.BLUE)[it % 4] }
+
+        val p = FloatArray(12)
+            .mapIndexed { index, i ->
+                val step = 1f / 12f
+                val b1 = index / 4 * 4 / 12f
+                val b2 = b1 + step * 1.5f
+                val b3 = b2
+                val b4 = b1 + step * 3f
+
+                if (index % 4 == 0)
+                    b1
+                else
+                    if (index % 4 == 1)
+                        b2
+                    else
+                        if (index % 4 == 2) b3
+                        else
+                            b4
+            }.toFloatArray()
+
+
+        val shader = SweepGradient(
+            centerX, centerY,
+            colorsA, p
+        )
+
+//        colorsA = intArrayOf(Color.RED, Color.RED, Color.BLUE, Color.BLUE)
+//        val positions = floatArrayOf(0f, 0.5f, 0.5f,  1f)
+//        shader = LinearGradient(
+//            0F, 0F, width.toFloat(), height.toFloat(),
+//            colorsA, positions, Shader.TileMode.REPEAT
+//        )
+
+        paint.shader = shader
+
         data?.let { data ->
             val realWeights = if (data.freePercent > 0)
                 data.weights.map { it * (100 - data.freePercent) / 100 } else data.weights
