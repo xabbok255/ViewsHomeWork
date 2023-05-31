@@ -17,6 +17,7 @@ import com.xabbok.viewshomework.R
 import java.security.InvalidParameterException
 import kotlin.math.ceil
 import kotlin.math.min
+import kotlin.math.pow
 import kotlin.random.Random
 
 
@@ -103,6 +104,26 @@ class StatsView @JvmOverloads constructor(
         )
     }
 
+    private fun generateFloats(count: Int): List<Float> {
+        val list = mutableListOf<Int>()
+
+        for (i in 0 until count) {
+            val a1 = i * 2
+            val a2 = a1 + 1
+            val a3 = a2
+            val a4 = a3 + 1
+
+            list.addAll(listOf(a1, a2, a3, a4))
+        }
+
+        val max = list.last().toFloat()
+
+        val newList = list.toIntArray().map {
+            it.toFloat() / max
+        }
+        return newList
+    }
+
     @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas) {
         val centerX = width / 2f
@@ -110,26 +131,16 @@ class StatsView @JvmOverloads constructor(
         val radius = width / 2f
 
         val colorsA =
-            IntArray(12) { intArrayOf(Color.RED, Color.RED, Color.BLUE, Color.BLUE)[it % 4] }
+            IntArray(2F.pow(5).toInt()) {
+                intArrayOf(
+                    Color.RED,
+                    Color.RED,
+                    Color.BLUE,
+                    Color.BLUE
+                )[it % 4]
+            }
 
-        val p = FloatArray(12)
-            .mapIndexed { index, i ->
-                val step = 1f / 12f
-                val b1 = index / 4 * 4 / 12f
-                val b2 = b1 + step * 1.5f
-                val b3 = b2
-                val b4 = b1 + step * 3f
-
-                if (index % 4 == 0)
-                    b1
-                else
-                    if (index % 4 == 1)
-                        b2
-                    else
-                        if (index % 4 == 2) b3
-                        else
-                            b4
-            }.toFloatArray()
+        val p = generateFloats(colorsA.size / 4).toFloatArray()
 
 
         val shader = SweepGradient(
