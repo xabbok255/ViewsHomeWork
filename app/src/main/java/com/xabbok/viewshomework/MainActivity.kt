@@ -1,10 +1,12 @@
 package com.xabbok.viewshomework
 
+import android.animation.LayoutTransition
 import android.os.Bundle
 import android.transition.ChangeBounds
 import android.transition.Scene
 import android.transition.TransitionManager
 import android.view.ViewGroup
+import android.view.animation.BounceInterpolator
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.xabbok.viewshomework.ui.StatsView
@@ -38,6 +40,17 @@ class MainActivity : AppCompatActivity(R.layout.main_activity) {
             TransitionManager.go(scene, ChangeBounds().apply {
                 duration = 3000
             })
+        }
+
+        val containerView = findViewById<ViewGroup>(R.id.container)
+        val buttonGo = findViewById<Button>(R.id.buttonGo)
+        containerView.layoutTransition = LayoutTransition().apply {
+            setDuration(2000)
+            setInterpolator(LayoutTransition.CHANGE_APPEARING, BounceInterpolator())
+        }
+        buttonGo.setOnClickListener {
+            val view = layoutInflater.inflate(R.layout.stats_view, containerView, false)
+            containerView.addView(view, 0)
         }
 
         /*statsView.startAnimation(

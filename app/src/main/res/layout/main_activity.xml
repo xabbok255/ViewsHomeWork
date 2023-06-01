@@ -1,37 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <FrameLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp">
 
-        android:id="@+id/root">
-        <include layout="@layout/start_scene" android:layout_gravity="center|top"
+        <LinearLayout
+            android:id="@+id/container"
+            android:animateLayoutChanges="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/buttonGo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/go" />
+
+    <FrameLayout
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+
+        android:layout_height="wrap_content">
+
+        <include
+            layout="@layout/start_scene"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|top" />
     </FrameLayout>
 
     <Button
+        android:id="@+id/animButtonStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/startAnimateText"
-        android:id="@+id/animButtonStart"
-        android:layout_gravity="center"/>
-
+        android:layout_gravity="center"
+        android:text="@string/startAnimateText" />
 
 
     <com.xabbok.viewshomework.ui.StatsView
         android:id="@+id/statsViewBidirectional"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
         android:layout_marginTop="2dp"
+        android:layout_weight="1"
         app:colors="@array/colors"
         app:fillType="bidirectional"
         app:lineWidth="24dp"
