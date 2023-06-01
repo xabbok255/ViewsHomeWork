@@ -83,7 +83,7 @@ class StatsView @JvmOverloads constructor(
         strokeCap = Paint.Cap.ROUND
     }
 
-    var data: StatsViewData? = null
+    var data: StatsViewData?  = StatsViewData(0f, listOf(1f, 1f, 1f, 1f))
         set(value) {
             field = value
             update()

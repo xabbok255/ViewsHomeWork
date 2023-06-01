@@ -3,12 +3,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:id="@+id/root">
+        <include layout="@layout/start_scene" android:layout_gravity="center|top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/startAnimateText"
+        android:id="@+id/animButtonStart"
+        android:layout_gravity="center"/>
+
+
 
     <com.xabbok.viewshomework.ui.StatsView
         android:id="@+id/statsViewBidirectional"
         android:layout_width="match_parent"
-        android:layout_height="276dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:layout_marginTop="2dp"
         app:colors="@array/colors"
         app:fillType="bidirectional"
@@ -18,7 +40,8 @@
     <com.xabbok.viewshomework.ui.StatsView
         android:id="@+id/statsViewSequential"
         android:layout_width="match_parent"
-        android:layout_height="276dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
 
         app:colors="@array/colors"
         app:fillType="sequential"
@@ -28,7 +51,8 @@
     <com.xabbok.viewshomework.ui.StatsView
         android:id="@+id/statsViewParallel"
         android:layout_width="match_parent"
-        android:layout_height="276dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         app:colors="@array/colors"
         app:fillType="parallel"
         app:lineWidth="24dp"

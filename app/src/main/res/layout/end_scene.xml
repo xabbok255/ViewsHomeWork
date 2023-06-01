@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.xabbok.viewshomework.ui.StatsView
+            android:id="@+id/view"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="2dp"
+            app:colors="@array/colors"
+            app:fillType="bidirectional"
+            app:lineWidth="24dp"
+            app:textSize="20sp"
+            android:layout_gravity="center|start"/>
+
+    <com.xabbok.viewshomework.ui.StatsView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="2dp"
+            app:colors="@array/colors"
+            app:fillType="bidirectional"
+            app:lineWidth="24dp"
+            app:textSize="20sp"
+            android:layout_gravity="center|end"/>
+    </FrameLayout>
+
+</merge>

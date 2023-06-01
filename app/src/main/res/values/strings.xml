@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ViewsHomeWork</string>
+    <string name="startAnimateText">Start animation</string>
 </resources>
